@@ -4,6 +4,8 @@
   "description": "A backend for analytics",
   "keywords": [],
   "dependencies": {
+    "body-parser": "^1.16.1",
+    "cassandra-driver": "^3.2.0",
     "express": "^4.14.1"
   },
   "scripts": {

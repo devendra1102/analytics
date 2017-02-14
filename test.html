@@ -1,0 +1,33 @@
+<html>
+
+<head></head>
+
+<body></body>
+
+</html>
+<script>
+  (function (window, undefined) {
+    var script = document.createElement('script');
+    script.async = true;
+    script.src = "static/analytics.js"
+
+    var entry = document.getElementsByTagName('script')[0];
+    entry.parentNode.insertBefore(script, entry);
+  })(window);
+
+  window.analyticsReady = function () {
+    console.log('script is loaded');
+    // analytics.add(function(){
+    //   console.log('Everything is perfect');
+    // });
+
+    analytics.push({
+      "email": "test@test.com",
+      "age": 10,
+      "name": "name"
+    }, () => {
+      console.log('wwwwwwwwwwww user pushed');
+    });
+  };
+
+</script>
