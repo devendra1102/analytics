@@ -1,7 +1,7 @@
 const express = require('express');
 const app = express();
 const cassandra = require('cassandra-driver');
-const client = new cassandra.Client({ contactPoints: ['127.0.0.1'], keyspace: 'test' });
+const client = new cassandra.Client({ contactPoints: ['127.0.0.1'], keyspace: 'test_analytics' });
 var bodyParser = require('body-parser');
 
 app.use(function (req, res, next) {
@@ -34,6 +34,7 @@ app.post('/insert', (req, res) => {
   const query = 'insert into users(name, email, age) values(?, ?, ?)';
   client.execute(query, [req.body.name, req.body.email, req.body.age], { prepare: true }).
     then(result => {
+      console.log('jjjjjjj');
       res.send('User pushed successfully');
       console.log('User pushed successfully');
     })
@@ -42,6 +43,19 @@ app.post('/insert', (req, res) => {
       console.log(err);
     });
 });
+
+app.post('/authentication', (req, res) => {
+  console.log('fourth');
+  const query = 'select * from credentials where app_name = ? and api_key = ? ALLOW FILTERING';
+  client.execute(query, [req.body.appName, req.body.apiKey], { prepare: true })
+    .then(result => {
+      res.send(result);
+      console.log('User pushed successfully');
+    })
+    .catch(err => {
+      console.log(err);
+    })
+})
 
 app.listen(3000, () => {
   console.log('Listening on port 3000');

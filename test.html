@@ -16,18 +16,21 @@
   })(window);
 
   window.analyticsReady = function () {
-    console.log('script is loaded');
-    // analytics.add(function(){
-    //   console.log('Everything is perfect');
-    // });
-
-    analytics.push({
+    console.log('second');
+    analytics.init({
+      appName: 'testapp',
+      apiKey: '1234567890'
+    },() => {
+      analytics.push({
       "email": "test@test.com",
       "age": 10,
       "name": "name"
     }, () => {
       console.log('wwwwwwwwwwww user pushed');
+      });
     });
+
+    
   };
 
 </script>

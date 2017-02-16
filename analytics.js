@@ -1,47 +1,66 @@
 var analytics = (function (window, undefined) {
   var analytics = {};
 
+  // function getScriptUrl() {
+  //   var scripts = document.getElementsByTagName('script');
+  //   var element;
+  //   var src;
+  //   for (var i = 0; i < scripts.length; i++) {
+  //   element = scripts[i];
+  //   src = element.src;
+  //     if (src) {
+  //       return src;
+  //     }
+
+  //   }
+  //   return null;
+  // }
+
+  function loadLibrary(src, cb) {
+    (function () {
+      var script = document.createElement('script');
+      script.async = true;
+      script.src = src;
+
+      var entry = document.getElementsByTagName('script')[0];
+      entry.parentNode.insertBefore(script, entry);
+      script.onload = script.onreadystatechange = function () {
+        var rdyState = script.readyState;
+        if (!rdyState || /complete|loaded/.test(script.readyState)) {
+          cb();
+          script.onload = null;
+          script.onreadystatechange = null;
+        }
+      }
+    })();
+  }
+
   if (window.analytics) {
     return;
   }
 
   window.analytics = analytics;
-
-  analytics.add = function (callback) {
-
-    var xhttp = new XMLHttpRequest();
-    xhttp.onreadystatechange = function () {
-      if (this.readyState == 4 && this.status == 200) {
-        console.log('Successfully connected to the backend server');
-      }
-    };
-    xhttp.open("GET", "http://192.168.1.124:3000/", true);
-    xhttp.send();
-    callback();
-  }
-
-  analytics.push = function (userInfo, callback) {
-    console.log('age is');
-    console.log(userInfo);
-    var xhttp = new XMLHttpRequest();
+  analytics.init = function (credentials) {
+    console.log('3rd');
     var post =
-      "name=" + encodeURIComponent(unescape(userInfo.name)) +
-      "&age=" + encodeURIComponent(unescape(userInfo.age)) +
-      "&email=" + encodeURIComponent(unescape(userInfo.email));
-    console.log('post is');
-    console.log(post);
+      "appName=" + encodeURIComponent(unescape(credentials.appName)) +
+      "&apiKey=" + encodeURIComponent(unescape(credentials.apiKey));
+    var xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function () {
-      if (this.readyState == 4 && this.status == 200) {
-        console.log('Successfully pushed user');
+      if (this.status === 200) {
+        //load lib.js here
+        console.log('Just before');
+        loadLibrary("static/lib.js", () => {
+
+        });
       }
     };
-    xhttp.open("POST", "http://192.168.1.124:3000/insert", true);
+    xhttp.open("POST", "http://192.168.1.124:3000/authentication", true);
     xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
     xhttp.send(post);
-    callback();
   }
-
   if (typeof window.analyticsReady === 'function') {
+    console.log('first');
     window.analyticsReady();
   }
 })(window);
