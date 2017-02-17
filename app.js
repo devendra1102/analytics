@@ -34,9 +34,7 @@ app.post('/insert', (req, res) => {
   const query = 'insert into users(name, email, age) values(?, ?, ?)';
   client.execute(query, [req.body.name, req.body.email, req.body.age], { prepare: true }).
     then(result => {
-      console.log('jjjjjjj');
       res.send('User pushed successfully');
-      console.log('User pushed successfully');
     })
     .catch(err => {
       console.log('err is');
@@ -45,17 +43,48 @@ app.post('/insert', (req, res) => {
 });
 
 app.post('/authentication', (req, res) => {
-  console.log('fourth');
   const query = 'select * from credentials where app_name = ? and api_key = ? ALLOW FILTERING';
   client.execute(query, [req.body.appName, req.body.apiKey], { prepare: true })
     .then(result => {
-      res.send(result);
-      console.log('User pushed successfully');
+      if (result.rows.length === 0) {
+        res.status(401);
+        res.send('Unauthorized User');
+      } else {
+        res.status(200);
+        res.send('Valid User');
+      }
+    });
+});
+
+app.post('/events', (req, res) => {
+  const query = 'insert into events(event_name, creation_time) values(?,?)';
+  client.execute(query, [req.body.eventName, new Date()], { prepare: true })
+    .then(result => {
+      res.status(200);
+      res.send('Successfully pushed event');
     })
     .catch(err => {
       console.log(err);
-    })
-})
+    });
+});
+
+app.post('/pageViewsTrack', (req, res) => {
+  const query = 'select page_views from pageview where org_name=?';
+  client.execute(query, [req.body.orgName], { prepare: true })
+    .then(result => {
+      if (result.rows.length === 0) {
+        res.status(401);
+        res.send('Invalid org name');
+      } else {
+        const updateQuery = 'update pageview set page_views = ? where org_name = ?';
+        client.execute(query, [result.rows[0].page_views + 1, req.body.orgName], { prepare: true })
+          .then(() => {
+            res.status(200);
+            res.send('Successfully updated page views');
+          });
+      }
+    });
+});
 
 app.listen(3000, () => {
   console.log('Listening on port 3000');

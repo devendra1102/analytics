@@ -1,21 +1,5 @@
-var analytics = (function (window, undefined) {
+(function (window, undefined) {
   var analytics = {};
-
-  // function getScriptUrl() {
-  //   var scripts = document.getElementsByTagName('script');
-  //   var element;
-  //   var src;
-  //   for (var i = 0; i < scripts.length; i++) {
-  //   element = scripts[i];
-  //   src = element.src;
-  //     if (src) {
-  //       return src;
-  //     }
-
-  //   }
-  //   return null;
-  // }
-
   function loadLibrary(src, cb) {
     (function () {
       var script = document.createElement('script');
@@ -41,7 +25,6 @@ var analytics = (function (window, undefined) {
 
   window.analytics = analytics;
   analytics.init = function (credentials) {
-    console.log('3rd');
     var post =
       "appName=" + encodeURIComponent(unescape(credentials.appName)) +
       "&apiKey=" + encodeURIComponent(unescape(credentials.apiKey));
@@ -49,9 +32,7 @@ var analytics = (function (window, undefined) {
     xhttp.onreadystatechange = function () {
       if (this.status === 200) {
         //load lib.js here
-        console.log('Just before');
         loadLibrary("static/lib.js", () => {
-
         });
       }
     };
